@@ -3,17 +3,34 @@ set -Eeuo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="$REPO_DIR/.config"
-SCRIPTS_DIR="$REPO_DIR/scripts"
 PACKAGES_DIR="$REPO_DIR/packages"
-PKGLIST="$PACKAGES_DIR/pkglist"
-PKGLIST_AUR="$PACKAGES_DIR/pkglist_aur"
+SCRIPTS_DIR="$REPO_DIR/scripts"
+WALLPAPERS_DIR="$REPO_DIR/assets/wallpapers"
+
+PKGLIST="$PACKAGES_DIR/pkglist.txt"
+PKGLIST_AUR="$PACKAGES_DIR/pkglist_aur.txt"
+
+CONFIG_ITEMS=(
+  conky
+  dunst
+  gtk-3.0
+  gtk-4.0
+  hypr
+  kitty
+  nvim
+  qt6ct
+  waybar
+  wofi
+  xsettingsd
+)
 
 INSTALL_PACKAGES=true
 INSTALL_AUR=true
-INSTALL_CONFIG=true
-INSTALL_SCRIPTS=true
-FORCE_OVERWRITE=false
+LINK_CONFIG=true
+LINK_SCRIPTS=true
+LINK_WALLPAPERS=true
 SKIP_YAY_BOOTSTRAP=false
+FORCE=false
 
 timestamp() {
   date +"%Y-%m-%d %H:%M:%S"
@@ -27,12 +44,8 @@ warn() {
   printf "[%s] [WARN] %s\n" "$(timestamp)" "$*" >&2
 }
 
-err() {
-  printf "[%s] [ERROR] %s\n" "$(timestamp)" "$*" >&2
-}
-
 die() {
-  err "$*"
+  printf "[%s] [ERROR] %s\n" "$(timestamp)" "$*" >&2
   exit 1
 }
 
@@ -41,77 +54,32 @@ usage() {
 Uso: bash install.sh [opciones]
 
 Opciones:
-  --only-packages     Solo instala paquetes oficiales
-  --only-aur          Solo instala paquetes AUR
-  --only-config       Solo copia ~/.config
-  --only-scripts      Solo copia scripts a ~/.local/bin
-
-  --no-packages       No instala paquetes oficiales
-  --no-aur            No instala paquetes AUR
-  --no-config         No copia ~/.config
-  --no-scripts        No copia scripts
-
-  --force             Sobrescribe destino sin backup
-  --skip-yay-bootstrap No intenta instalar yay automáticamente
-  -h, --help          Muestra esta ayuda
+  --no-packages           No instala paquetes oficiales
+  --no-aur                No instala paquetes AUR
+  --no-config             No crea symlinks de ~/.config
+  --no-scripts            No crea symlink de ~/.local/bin
+  --no-wallpapers         No crea symlink de ~/Wallpapers
+  --skip-yay-bootstrap    No intenta instalar yay automáticamente
+  --force                 Borra destino existente en vez de hacer backup
+  -h, --help              Muestra esta ayuda
 
 Ejemplos:
   bash install.sh
   bash install.sh --no-aur
-  bash install.sh --only-config
-  bash install.sh --only-packages --only-aur
+  bash install.sh --no-packages --no-aur
 EOF
 }
 
 parse_args() {
-  if [[ $# -eq 0 ]]; then
-    return
-  fi
-
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --only-packages)
-        INSTALL_PACKAGES=true
-        INSTALL_AUR=false
-        INSTALL_CONFIG=false
-        INSTALL_SCRIPTS=false
-        ;;
-      --only-aur)
-        INSTALL_PACKAGES=false
-        INSTALL_AUR=true
-        INSTALL_CONFIG=false
-        INSTALL_SCRIPTS=false
-        ;;
-      --only-config)
-        INSTALL_PACKAGES=false
-        INSTALL_AUR=false
-        INSTALL_CONFIG=true
-        INSTALL_SCRIPTS=false
-        ;;
-      --only-scripts)
-        INSTALL_PACKAGES=false
-        INSTALL_AUR=false
-        INSTALL_CONFIG=false
-        INSTALL_SCRIPTS=true
-        ;;
-      --no-packages)
-        INSTALL_PACKAGES=false
-        ;;
-      --no-aur)
-        INSTALL_AUR=false
-        ;;
-      --no-config)
-        INSTALL_CONFIG=false
-        ;;
-      --no-scripts)
-        INSTALL_SCRIPTS=false
-        ;;
-      --force)
-        FORCE_OVERWRITE=true
-        ;;
-      --skip-yay-bootstrap)
-        SKIP_YAY_BOOTSTRAP=true
-        ;;
+      --no-packages) INSTALL_PACKAGES=false ;;
+      --no-aur) INSTALL_AUR=false ;;
+      --no-config) LINK_CONFIG=false ;;
+      --no-scripts) LINK_SCRIPTS=false ;;
+      --no-wallpapers) LINK_WALLPAPERS=false ;;
+      --skip-yay-bootstrap) SKIP_YAY_BOOTSTRAP=true ;;
+      --force) FORCE=true ;;
       -h|--help)
         usage
         exit 0
@@ -130,51 +98,64 @@ require_cmd() {
 
 check_arch() {
   require_cmd pacman
-  if [[ ! -f /etc/arch-release ]]; then
-    die "Este script está pensado para Arch Linux o derivadas con pacman."
-  fi
+  [[ -f /etc/arch-release ]] || die "Este script está pensado para Arch Linux."
 }
 
-backup_path() {
+backup_or_remove() {
   local target="$1"
-  local backup="${target}.bak.$(date +%Y%m%d%H%M%S)"
-  mv "$target" "$backup"
-  log "Backup creado: $backup"
+
+  [[ -e "$target" || -L "$target" ]] || return 0
+
+  if [[ "$FORCE" == true ]]; then
+    rm -rf "$target"
+    log "Eliminado: $target"
+  else
+    local backup="${target}.bak.$(date +%Y%m%d%H%M%S)"
+    mv "$target" "$backup"
+    log "Backup: $target -> $backup"
+  fi
 }
 
-copy_item() {
-  local src="$1"
-  local dest="$2"
+ensure_parent_dir() {
+  mkdir -p "$(dirname "$1")"
+}
 
-  if [[ ! -e "$src" ]]; then
-    warn "No existe la fuente: $src"
-    return
-  fi
+create_symlink() {
+  local source="$1"
+  local target="$2"
 
-  mkdir -p "$(dirname "$dest")"
+  [[ -e "$source" || -L "$source" ]] || {
+    warn "No existe la fuente: $source"
+    return 0
+  }
 
-  if [[ -e "$dest" || -L "$dest" ]]; then
-    if [[ "$FORCE_OVERWRITE" == true ]]; then
-      rm -rf "$dest"
-      log "Sobrescrito: $dest"
-    else
-      backup_path "$dest"
+  ensure_parent_dir "$target"
+
+  if [[ -L "$target" ]]; then
+    local current
+    current="$(readlink -f "$target" || true)"
+    local desired
+    desired="$(readlink -f "$source" || true)"
+    if [[ -n "$current" && -n "$desired" && "$current" == "$desired" ]]; then
+      log "Ya existe el symlink correcto: $target"
+      return 0
     fi
   fi
 
-  cp -a "$src" "$dest"
-  log "Copiado: $src -> $dest"
+  backup_or_remove "$target"
+  ln -s "$source" "$target"
+  log "Symlink: $target -> $source"
 }
 
 install_official_packages() {
   [[ "$INSTALL_PACKAGES" == true ]] || return 0
 
-  if [[ ! -f "$PKGLIST" ]]; then
+  [[ -f "$PKGLIST" ]] || {
     warn "No se encontró $PKGLIST. Salto paquetes oficiales."
     return 0
-  fi
+  }
 
-  log "Instalando paquetes oficiales desde $PKGLIST"
+  log "Instalando paquetes oficiales"
   sudo pacman -Syu --needed --noconfirm - < "$PKGLIST"
 }
 
@@ -191,143 +172,126 @@ bootstrap_yay() {
     return 0
   fi
 
-  log "Instalando dependencias para bootstrap de yay"
+  log "Instalando dependencias para yay"
   sudo pacman -S --needed --noconfirm git base-devel
 
   local tmpdir
   tmpdir="$(mktemp -d)"
-  trap 'rm -rf "$tmpdir"' RETURN
-
-  log "Clonando yay desde AUR"
+  log "Clonando yay en $tmpdir"
   git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
 
   pushd "$tmpdir/yay" >/dev/null
-  log "Compilando e instalando yay"
   makepkg -si --noconfirm
   popd >/dev/null
 
-  if ! command -v yay >/dev/null 2>&1; then
-    die "No se pudo instalar yay"
-  fi
+  rm -rf "$tmpdir"
 
+  command -v yay >/dev/null 2>&1 || die "No se pudo instalar yay"
   log "yay instalado correctamente"
 }
 
 install_aur_packages() {
   [[ "$INSTALL_AUR" == true ]] || return 0
 
-  if [[ ! -f "$PKGLIST_AUR" ]]; then
+  [[ -f "$PKGLIST_AUR" ]] || {
     warn "No se encontró $PKGLIST_AUR. Salto paquetes AUR."
     return 0
-  fi
+  }
 
   if command -v yay >/dev/null 2>&1; then
-    log "Instalando paquetes AUR con yay desde $PKGLIST_AUR"
+    log "Instalando paquetes AUR con yay"
     yay -S --needed --noconfirm - < "$PKGLIST_AUR"
   elif command -v paru >/dev/null 2>&1; then
-    log "Instalando paquetes AUR con paru desde $PKGLIST_AUR"
+    log "Instalando paquetes AUR con paru"
     paru -S --needed --noconfirm - < "$PKGLIST_AUR"
   else
     warn "No se encontró yay ni paru. Salto AUR."
   fi
 }
 
-install_config() {
-  [[ "$INSTALL_CONFIG" == true ]] || return 0
-
-  if [[ ! -d "$CONFIG_DIR" ]]; then
-    warn "No se encontró $CONFIG_DIR. Salto copia de .config."
+link_config_dirs() {
+  [[ "$LINK_CONFIG" == true ]] || return 0
+  [[ -d "$CONFIG_DIR" ]] || {
+    warn "No existe $CONFIG_DIR. Salto symlinks de .config."
     return 0
-  fi
+  }
 
-  log "Copiando configuraciones a $HOME/.config"
   mkdir -p "$HOME/.config"
 
-  shopt -s dotglob nullglob
-  for src in "$CONFIG_DIR"/*; do
-    local name
-    name="$(basename "$src")"
-    copy_item "$src" "$HOME/.config/$name"
+  for item in "${CONFIG_ITEMS[@]}"; do
+    create_symlink "$CONFIG_DIR/$item" "$HOME/.config/$item"
   done
-  shopt -u dotglob nullglob
 }
 
-install_scripts() {
-  [[ "$INSTALL_SCRIPTS" == true ]] || return 0
-
-  if [[ ! -d "$SCRIPTS_DIR" ]]; then
-    warn "No se encontró $SCRIPTS_DIR. Salto copia de scripts."
+link_scripts_dir() {
+  [[ "$LINK_SCRIPTS" == true ]] || return 0
+  [[ -d "$SCRIPTS_DIR" ]] || {
+    warn "No existe $SCRIPTS_DIR. Salto symlink de scripts."
     return 0
-  fi
+  }
 
-  log "Copiando scripts a $HOME/.local/bin"
-  mkdir -p "$HOME/.local/bin"
+  create_symlink "$SCRIPTS_DIR" "$HOME/.local/bin"
+}
 
-  shopt -s dotglob nullglob
-  for src in "$SCRIPTS_DIR"/*; do
-    local name
-    name="$(basename "$src")"
-    copy_item "$src" "$HOME/.local/bin/$name"
-    chmod +x "$HOME/.local/bin/$name" || true
-  done
-  shopt -u dotglob nullglob
+link_wallpapers_dir() {
+  [[ "$LINK_WALLPAPERS" == true ]] || return 0
+  [[ -d "$WALLPAPERS_DIR" ]] || {
+    warn "No existe $WALLPAPERS_DIR. Salto symlink de wallpapers."
+    return 0
+  }
+
+  create_symlink "$WALLPAPERS_DIR" "$HOME/Wallpapers"
 }
 
 ensure_local_bin_in_path() {
-  local shell_rc=""
-
-  if [[ -n "${ZSH_VERSION:-}" ]]; then
-    shell_rc="$HOME/.zshrc"
-  elif [[ -n "${BASH_VERSION:-}" ]]; then
-    shell_rc="$HOME/.bashrc"
+  if [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
+    log "~/.local/bin ya está en PATH"
   else
-    warn "No pude detectar shell actual para comprobar PATH"
-    return 0
+    warn "~/.local/bin no está en PATH en esta sesión"
+    warn "Añádelo a tu shell si hace falta"
   fi
-
-  if [[ -f "$shell_rc" ]] && grep -qE '(^|:)\$HOME/\.local/bin(:|$)|(^|:)~\/\.local/bin(:|$)' "$shell_rc"; then
-    log "~/.local/bin ya parece estar en PATH según $shell_rc"
-    return 0
-  fi
-
-  warn "Asegúrate de tener \$HOME/.local/bin en tu PATH"
 }
 
-show_summary() {
+summary() {
   cat <<EOF
 
-Resumen:
-  Repo:              $REPO_DIR
-  Paquetes oficiales: $( [[ "$INSTALL_PACKAGES" == true ]] && echo "sí" || echo "no" )
-  Paquetes AUR:       $( [[ "$INSTALL_AUR" == true ]] && echo "sí" || echo "no" )
-  Configs:            $( [[ "$INSTALL_CONFIG" == true ]] && echo "sí" || echo "no" )
-  Scripts:            $( [[ "$INSTALL_SCRIPTS" == true ]] && echo "sí" || echo "no" )
-  Force overwrite:    $( [[ "$FORCE_OVERWRITE" == true ]] && echo "sí" || echo "no" )
+Instalación terminada.
 
-Notas:
-  - Revisa fuentes, wallpapers y otras dependencias externas si algo no se ve igual.
-  - Si usas scripts personalizados, verifica que sus dependencias estén en pkglist o pkglist_aur.
+Repo:             $REPO_DIR
+Config symlinks:  $LINK_CONFIG
+Scripts symlink:  $LINK_SCRIPTS
+Wallpapers link:  $LINK_WALLPAPERS
+Official pkgs:    $INSTALL_PACKAGES
+AUR pkgs:         $INSTALL_AUR
+
+Comprobaciones útiles:
+  ls -l ~/.config
+  ls -l ~/.local
+  ls -l ~ | grep Wallpapers
+  cd ~/dotfiles && git status
 EOF
 }
 
 main() {
   parse_args "$@"
+
   check_arch
-  require_cmd cp
+  require_cmd git
+  require_cmd ln
   require_cmd mv
+  require_cmd readlink
   require_cmd sudo
 
-  log "Iniciando instalación desde $REPO_DIR"
+  log "Instalando desde $REPO_DIR"
 
   install_official_packages
   bootstrap_yay
   install_aur_packages
-  install_config
-  install_scripts
+  link_config_dirs
+  link_scripts_dir
+  link_wallpapers_dir
   ensure_local_bin_in_path
-
-  log "Instalación completada"
-  show_summary
+  summary
 }
 
 main "$@"
