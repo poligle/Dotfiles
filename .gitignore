@@ -94,17 +94,4 @@ pipewire/
 fontconfig/
 mesa_shader_cache/
 
-# =========================
-
-# Wallpapers grandes (opcional)
-
-# =========================
-
-# si decides no subirlos
-
-assets/wallpapers/*
-
-# pero permite algunos si quieres
-
-!assets/wallpapers/.keep
 
