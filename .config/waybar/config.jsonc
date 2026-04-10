@@ -1,0 +1,164 @@
+{
+  "layer": "top",
+  "position": "top",
+  "mode": "dock",
+  "height": 40,
+  "exclusive": true,
+  "passthrough": false,
+  "margin-top": 5,
+  "margin-left": 5,
+  "margin-right": 5,
+  "output": ["eDP-1", "HDMI-A-1"],
+
+  "modules-left": [
+    "custom/applauncher",
+    "hyprland/window"
+  ],
+
+  "modules-center": [
+    "hyprland/workspaces"
+  ],
+
+  "modules-right": [
+    "pulseaudio",
+    "custom/microphone",
+    "backlight",
+    "cpu",
+    "memory",
+    "custom/network",
+    "custom/bluetooth",
+    "battery",
+    "clock",
+    "custom/pacman",
+    "custom/lock",
+    "custom/power"
+  ],
+
+  "custom/applauncher": {
+    "format": "  Apps",
+    "tooltip": false,
+    "on-click": "wofi --show drun"
+  },
+
+  "hyprland/window": {
+    "format": "{}",
+    "rewrite": {
+        "(.*) — Mozilla Firefox": "$1",
+        "(.*) - Mozilla Firefox": "$1"
+    },
+    "max-length": 40,
+    "separate-outputs": true
+  },
+
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{icon}",
+    "format-icons": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "",
+      "5": "",
+      "6": "",
+      "7": "",
+      "8": "",
+      "9": "",
+      "10": "",
+      "default": ""
+    },
+    "persistent-workspaces": {
+      "*": 5
+    }
+  },
+
+  "clock": {
+    "tooltip": false,
+    "interval": 60,
+    "format": "{:%H:%M}",
+    "format-alt": "{:%A %d %B}"
+  },
+
+  "pulseaudio": {
+    "tooltip": false,
+    "scroll-step": 5,
+    "format": "{icon}  {volume}%",
+    "format-muted": "󰖁 Muted",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
+  },
+
+  "custom/microphone": {
+    "tooltip": false,
+    "exec": "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{ if ($0 ~ /MUTED/) print \"󰍭 Muted\"; else printf \"󰍬 %d%%\", int($2*100) }'",
+    "interval": 2,
+    "return-type": "text",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+    "on-click-right": "pavucontrol"
+  },
+
+  "backlight": {
+    "tooltip": false,
+    "device": "amdgpu_bl1",
+    "format": "󰃠  {percent}%",
+    "scroll-step": 5
+  },
+
+  "cpu": {
+    "interval": 2,
+    "format": "  {usage}%"
+  },
+
+  "memory": {
+    "interval": 2,
+    "format": "  {}%",
+    "format-alt":"  {used} GiB"
+  },
+
+  "custom/network": {
+    "exec": "bash -c 'if [ \"$(nmcli -t -f WIFI g)\" = \"disabled\" ]; then echo \"󰖪  off\"; else ssid=$(nmcli -t -f TYPE,STATE,CONNECTION dev status | grep \"^wifi:connected:\" | cut -d: -f3- | head -n1); if [ -n \"$ssid\" ] && [ \"$ssid\" != \"--\" ]; then echo \"  $ssid\"; else echo \"  on\"; fi; fi'",
+    "interval": 3,
+    "tooltip": false,
+    "return-type": "text",
+    "on-click": "bash -c 'if [ \"$(nmcli -t -f WIFI g)\" = \"enabled\" ]; then nmcli radio wifi off; else nmcli radio wifi on; fi'",
+    "on-click-right": "nm-connection-editor"
+  },
+
+  "custom/bluetooth": {
+    "exec": "bash -c 'if rfkill list bluetooth | grep -q \"Soft blocked: yes\"; then echo \" off\"; else dev=$(bluetoothctl devices Connected | cut -d\" \" -f3- | head -n1); if [ -n \"$dev\" ]; then echo \" $dev\"; else echo \" on\"; fi; fi'",
+    "interval": 3,
+    "tooltip": false,
+    "return-type": "text",
+    "on-click": "bash -c 'if rfkill list bluetooth | grep -q \"Soft blocked: yes\"; then rfkill unblock bluetooth; else rfkill block bluetooth; fi'",
+    "on-click-right": "blueman-manager"
+  },
+
+  "battery": {
+    "tooltip": false,
+    "interval": 10,
+    "format": "{icon} {capacity}%",
+    "format-alt": "{time}",
+    "format-icons": ["󰂎","󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"]
+  },
+
+  "custom/pacman": {
+    "format": "󰮯",
+    "tooltip": false,
+    "on-click": "kitty -e bash -lc 'sudo pacman -Syu; read -n 1 -s -r'"
+  },
+
+  "custom/lock": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "hyprlock"
+  },
+
+  "custom/power": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "systemctl poweroff"
+  }
+}

@@ -1,0 +1,5 @@
+bibata-cursor-theme
+tokyonight-gtk-theme-git
+visual-studio-code-bin
+yay
+yay-debug

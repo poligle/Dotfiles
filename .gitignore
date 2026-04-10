@@ -1,0 +1,110 @@
+# =========================
+
+# System / OS
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# Logs & temp
+
+# =========================
+
+*.log
+*.tmp
+*.cache
+.cache/
+
+# =========================
+
+# Backups (muy importante)
+
+# =========================
+
+*.bak
+*.backup
+*.old
+
+# =========================
+
+# Secrets / sensitive
+
+# =========================
+
+.env
+.env.*
+*.key
+*.pem
+
+# SSH / GPG (nunca subir)
+
+.ssh/
+.gnupg/
+
+# =========================
+
+# Editors
+
+# =========================
+
+*.swp
+*.swo
+*~
+
+# =========================
+
+# Python / dev basura
+
+# =========================
+
+**pycache**/
+*.pyc
+
+# =========================
+
+# Node (por si acaso)
+
+# =========================
+
+node_modules/
+
+# =========================
+
+# Dotfiles peligrosos
+
+# =========================
+
+# evita subir cosas gigantes o dependientes de máquina
+
+mozilla/
+chromium/
+google-chrome/
+BraveSoftware/
+
+# audio / estado
+
+pulse/
+pipewire/
+
+# caches de apps
+
+fontconfig/
+mesa_shader_cache/
+
+# =========================
+
+# Wallpapers grandes (opcional)
+
+# =========================
+
+# si decides no subirlos
+
+assets/wallpapers/*
+
+# pero permite algunos si quieres
+
+!assets/wallpapers/.keep
+

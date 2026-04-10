@@ -1,0 +1,188 @@
+@import "colors.css";
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: JetbrainsMono Nerd Font;
+  font-weight: bold;
+  font-size: 14px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: alpha(@surface0, 0.6);
+  color: @text;
+  border-radius: 10px;
+}
+
+/* ================= BASE ================= */
+
+#custom-applauncher,
+#workspaces,
+#clock,
+#pulseaudio,
+#custom-microphone,
+#backlight,
+#cpu,
+#memory,
+#custom-network,
+#custom-bluetooth,
+#battery,
+#custom-pacman,
+#custom-lock,
+#custom-power,
+#window {
+  background-color: alpha(@surface0, 0.6);
+  padding: 0.22rem 0.4rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 0;
+  margin-right: 0;
+  box-shadow: none;
+  border: none;
+}
+
+/* ================= LEFT ================= */
+
+#custom-applauncher {
+  color: @color1;
+  border-radius: 0.5rem;
+  margin-left: 0.4rem;
+  margin-right: 2rem;
+  padding: 0.38rem 0.7rem;
+}
+
+#window {
+  color: @text;
+  background: transparent;
+  padding: 0.3rem 0.4rem;
+}
+
+/* ================= WORKSPACES ================= */
+
+#workspaces {
+  border-radius: 0.5rem;
+  margin-left: 1rem;
+  padding: 0 0.35rem;
+}
+
+#workspaces button {
+  color: @surface1;
+  border-radius: 0.7rem;
+  padding: 0 0.35rem;
+  margin: 0;
+}
+
+#workspaces button.active {
+  color: @color1;
+}
+
+#workspaces button:hover {
+  color: @color2;
+}
+
+/* ================= CLOCK ================= */
+
+#clock {
+  color: @color1;
+  border-radius: 0.7rem;
+  padding: 0.38rem 0.8rem;
+  margin-right: 1rem;
+}
+
+/* ================= AUDIO BLOCK ================= */
+
+#pulseaudio {
+  color: @color1;
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding-left: 1rem;
+  padding-right: 0.45rem;
+}
+
+#custom-microphone {
+  color: @color1;
+  border-radius: 0;
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
+}
+
+#backlight {
+  color: @color1;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding-left: 0.45rem;
+  padding-right: 1rem;
+  margin-right: 1rem;
+}
+
+/* ================= STATS BLOCK ================= */
+
+#cpu {
+  color: @color1;
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding-left: 1rem;
+  padding-right: 0.45rem;
+}
+
+#memory {
+  color: @color1;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding-left: 0.45rem;
+  padding-right: 1rem;
+  margin-right: 1rem;
+}
+
+/* ================= NETWORK BLOCK ================= */
+
+#custom-network {
+  color: @color1;
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding-left: 1rem;
+  padding-right: 0.6rem;
+}
+
+#custom-bluetooth {
+  color: @color1;
+  border-radius: 0;
+  padding-left: 0.35rem;
+  padding-right: 0.6rem;
+}
+
+#battery {
+  color: @color1;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding-left: 0.6rem;
+  padding-right: 1rem;
+  margin-right: 1rem;
+}
+
+#battery.charging {
+  color: @color4;
+}
+
+#battery.warning:not(.charging) {
+  color: @color3;
+}
+
+/* ================= ACTIONS BLOCK ================= */
+
+#custom-pacman {
+  color: @color5;
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding-left: 1rem;
+  padding-right: 0.45rem;
+}
+
+#custom-lock {
+  color: @color6;
+  border-radius: 0;
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
+}
+
+#custom-power {
+  color: @color3;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding-left: 0.45rem;
+  padding-right: 1rem;
+  margin-right: 0.4rem;
+}

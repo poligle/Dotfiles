@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+
+LED="/sys/class/leds/platform::micmute/brightness"
+
+out="$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>&1 || true)"
+
+echo 0 > "$LED"
+
+if [[ "$out" == *"Could not connect to PipeWire"* ]]; then
+    echo "mic-led-sync: PipeWire no accesible en esta sesión." >&2
+    exit 1
+fi
+
+if [[ "$out" == *"No such"* ]] || [[ "$out" == *"Unknown"* ]]; then
+    echo "mic-led-sync: no hay DEFAULT_AUDIO_SOURCE válido. Salida: $out" >&2
+    exit 1
+fi
+
+if echo "$out" | grep -q "MUTED"; then
+    echo 1 > "$LED"
+else
+    echo 0 > "$LED"
+fi

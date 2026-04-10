@@ -1,0 +1,12 @@
+@define-color text      #ffffff;
+
+@define-color surface0  #2c2c2c;                    /* Color de fons */ 
+@define-color surface1  #837d9b;                    /* Color per workspaces */
+
+@define-color color1    #e8e8ff;                    /* Main Color */
+@define-color color2    #bebeef;                    /* Second Color */
+@define-color color3    #cf4e4e;                    /* Red */
+@define-color color4    #87d33a;                    /* Green */
+@define-color color5    #fffc82;                    /* Yellow */
+@define-color color6    #6bafc4;                    /* Blue */
+

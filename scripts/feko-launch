@@ -1,0 +1,9 @@
+#!/bin/bash
+FEKO_BIN="/home/polig/Programs/Feko/altair/feko/bin"
+
+export LD_LIBRARY_PATH="$FEKO_BIN:$LD_LIBRARY_PATH"
+
+export QT_QPA_PLATFORM=xcb
+export QT_STYLE_OVERRIDE=qt6ct
+
+exec "$FEKO_BIN/feko_launcher" "$@"

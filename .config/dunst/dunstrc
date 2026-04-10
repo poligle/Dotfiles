@@ -1,0 +1,44 @@
+[global]
+    follow = mouse
+    indicate_hidden = yes
+
+    offset = 10x10
+
+    separator_height = 1
+
+    padding = 10
+    horizontal_padding = 12
+    frame_width = 0
+
+    separator_color = "#2c2c2c22"
+
+    font = Sans 10
+    line_height = 0
+    markup = full
+    alignment = left
+    vertical_alignment = center
+
+    word_wrap = yes
+    stack_duplicates = true
+
+    corner_radius = 10
+    timeout = 5
+
+    min_icon_size = 16
+    max_icon_size = 32
+    text_icon_padding = 6
+
+    icon_theme = Colloid-Dark
+    icon_path = /usr/share/icons/Colloid-Dark/status/16:/usr/share/icons/Colloid-Dark/status/24:/usr/share/icons/Colloid-Dark/apps/scalable:/usr/share/icons/Colloid-Dark/apps/22:/usr/share/icons/Colloid-Dark/devices/16:/usr/share/icons/Colloid-Dark/devices/24:/usr/share/icons/Colloid-Dark/actions/16:/usr/share/icons/Colloid-Dark/actions/24
+
+[urgency_low]
+    background = "#2c2c2ccc"
+    foreground = "#e6edf3"
+
+[urgency_normal]
+    background = "#2c2c2ccc"
+    foreground = "#e6edf3"
+
+[urgency_critical]
+    background = "#2c2c2ccc"
+    foreground = "#ffffff"
