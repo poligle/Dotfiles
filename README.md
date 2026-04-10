@@ -1,130 +1,126 @@
-# Dotfiles - Arch Linux + Hyprland
+# Dotfiles (Hyprland - Arch Linux)
 
-Configuración personal para un entorno basado en Arch Linux usando Hyprland.
+Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux**.
+
+> ⚠️ Este repo refleja mi setup personal. Puede requerir ajustes según tu hardware o entorno.
 
 ---
 
-## 📦 Contenido
+## 🖼️ Screenshots
 
-* Hyprland (wm)
-* Waybar (barra)
-* Wofi (launcher)
-* Dunst (notificaciones)
-* Kitty (terminal)
-* Neovim
-* GTK / Qt settings
+### Desktop
+![desktop](assets/screenshots/desktop.png)
+
+### Dwindle layout
+![dwindle](assets/screenshots/dwindle_layout.png)
+
+### Notifications
+![notifications](assets/screenshots/notifications.png)
+
+### Wofi
+![wofi](assets/screenshots/wofi.png)
+
+---
+
+## 📦 Qué incluye
+
+Este repositorio contiene:
+
+### 🖥️ Configuraciones (`.config`)
+
+Configuraciones principales del entorno:
+
+- Hyprland
+- Waybar
+- Kitty
+- Wofi
+- Neovim
+- Dunst
+- GTK (3 y 4)
+- qt6ct
+- xsettingsd
+- Conky
+
+---
+
+### ⚙️ Scripts (`scripts/`)
+
+Scripts personalizados usados en el sistema:
+
+- `waybar-autohide` → auto-oculta Waybar
+- `feko-launch` → launcher personalizado
+- `mic-led-sync` → sincronización de micrófono/LED
+
+> ⚠️ Algunos scripts pueden depender de herramientas externas (ej: `playerctl`, `pactl`, etc.)
+
+---
+
+### 🖼️ Assets (`assets/`)
+
+- `wallpapers/` → wallpapers usados
+- `screenshots/` → capturas del entorno
+
+---
+
+### 📦 Paquetes (`packages/`)
+
+- `pkglist.txt` → paquetes oficiales (pacman)
+- `pkglist_aur.txt` → paquetes AUR
+
+---
+
+## ❌ Qué NO incluye
+
+Este repo **no intenta replicar todo el sistema**. No incluye:
+
+- configuraciones de aplicaciones no importantes
+- caches o datos temporales
+- apps como navegadores, Discord, etc.
+- configuraciones específicas de hardware
 
 ---
 
 ## 🚀 Instalación
 
-Clonar el repositorio:
-
 ```bash
-git clone https://github.com/TU_USUARIO/dotfiles.git
+git clone https://github.com/poligle/dotfiles.git
 cd dotfiles
-```
-
-Ejecutar el script de instalación:
-
-```bash
 bash install.sh
 ```
 
 ---
 
-## ⚙️ Qué hace el script
+## ⚙️ Qué hace install.sh
 
-* Instala paquetes oficiales (`pacman`)
-* Instala paquetes AUR (si tienes `yay` o `paru`)
-* Copia configuraciones a `~/.config`
-* Hace backup de configuraciones existentes
-
----
-
-## 📋 Requisitos
-
-* Arch Linux
-* `git`
-* `sudo`
-
-Opcional (para AUR):
-
-* `yay` o `paru`
+- instala paquetes oficiales (`pacman`)
+- instala paquetes AUR (`yay`)
+- crea symlinks de las configuraciones en `~/.config`
+- enlaza scripts en `~/.local/bin`
+- enlaza wallpapers en `~/Wallpapers`
+- crea backups si ya existen archivos
 
 ---
 
-## 📁 Estructura del repositorio
+## ⚠️ Notas
 
-```text
-dotfiles/
-├── .config/          # Configuraciones de usuario
-├── packages/         # Listas de paquetes
-│   ├── pkglist
-│   └── pkglist_aur
-├── install.sh
-├── README.md
-└── .gitignore
-```
+- El script está pensado para **Arch Linux**
+- Puede sobrescribir configuraciones existentes (se hace backup)
+- Algunas cosas pueden no funcionar sin ajustes (monitores, GPU, etc.)
 
 ---
 
-## ⚠️ Notas importantes
+## 🧠 Objetivo del repo
 
-* El script no elimina tu configuración actual, hace backup automático.
-* Algunas configuraciones pueden depender de elementos externos como:
+Este repo está pensado como:
 
-  * fuentes (ej: Nerd Fonts)
-  * wallpapers
-  * scripts en `~/.local/bin`
-* Asegúrate de tener estos elementos si algo no se ve correctamente.
+- Backup de configuración
+- Referencia personal
+- Punto de partida para otros usuarios
 
----
-
-## 🔄 Restauración manual (opcional)
-
-Si no quieres usar el script:
-
-```bash
-cp -r .config/* ~/.config/
-```
-
-Instalar paquetes:
-
-```bash
-sudo pacman -S --needed - < packages/pkglist
-```
-
-AUR:
-
-```bash
-yay -S --needed - < packages/pkglist_aur
-```
+No como solución universal plug-and-play.
 
 ---
 
-## 🧪 Recomendación
+## 📜 Licencia
 
-Para probar en limpio:
-
-```bash
-mv ~/.config ~/.config.backup
-mkdir ~/.config
-
-bash install.sh
-```
-
----
-
-## 📌 TO DO / mejoras futuras
-
-* [ ] Añadir wallpapers al repo o documentarlos
-* [ ] Script para instalar AUR automáticamente
-* [ ] Gestión de fuentes
-
----
-
-## 📄 Licencia
-
-GNU
-
+Uso personal.
