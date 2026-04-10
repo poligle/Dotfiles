@@ -14,11 +14,31 @@ Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux*
 ### Dwindle layout
 ![dwindle](assets/screenshots/dwindle_layout.png)
 
+### Wofi
+![wofi](assets/screenshots/wofi.png)
+
+
 ### Notifications
 ![notifications](assets/screenshots/notifications.png)
 
-### Wofi
-![wofi](assets/screenshots/wofi.png)
+---
+
+## 🎨 Tema
+
+- **GTK Theme:** Colloid-Dark
+- **Icons:** Colloid-Dark
+- **Cursor:** Bibata-Modern-Classic
+- **Font:** Sans Serif / FreeMono (terminal)
+
+---
+
+## 💻 Entorno
+
+- **WM:** Hyprland
+- **Bar:** Waybar
+- **Launcher:** Wofi
+- **Terminal:** Kitty
+- **Shell:** Bash
 
 ---
 
