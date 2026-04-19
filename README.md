@@ -12,7 +12,7 @@ Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux*
 ![desktop](assets/screenshots/desktop.png)
 
 ### Dwindle layout
-![dwindle](assets/screenshots/Dwindle_Layout.png)
+![dwindle](assets/screenshots/Dwindle Layout.png)
 
 ### Wofi
 ![wofi](assets/screenshots/wofi.png)
