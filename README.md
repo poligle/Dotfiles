@@ -12,7 +12,7 @@ Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux*
 ![desktop](assets/screenshots/desktop.png)
 
 ### Dwindle layout
-![dwindle](assets/screenshots/dwindle_layout.png)
+![dwindle](assets/screenshots/Dwindle_Layout.png)
 
 ### Wofi
 ![wofi](assets/screenshots/wofi.png)
@@ -38,7 +38,7 @@ Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux*
 - **Bar:** Waybar
 - **Launcher:** Wofi
 - **Terminal:** Kitty
-- **Shell:** Bash
+- **Shell:** ZSH
 
 ---
 
@@ -60,6 +60,8 @@ Configuraciones principales del entorno:
 - qt6ct
 - xsettingsd
 - Conky
+- Plymouth
+- ZSH
 
 ---
 
@@ -70,6 +72,7 @@ Scripts personalizados usados en el sistema:
 - `waybar-autohide` → auto-oculta Waybar
 - `feko-launch` → launcher personalizado
 - `mic-led-sync` → sincronización de micrófono/LED
+- `wall_next` → Cambia el wallpaper del desktop y de lockscreen
 
 > ⚠️ Algunos scripts pueden depender de herramientas externas (ej: `playerctl`, `pactl`, etc.)
 
@@ -85,7 +88,7 @@ Scripts personalizados usados en el sistema:
 ### 📦 Paquetes (`packages/`)
 
 - `pkglist.txt` → paquetes oficiales (pacman)
-- `pkglist_aur.txt` → paquetes AUR
+- `aur-pkglist.txt` → paquetes AUR
 
 ---
 
