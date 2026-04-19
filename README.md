@@ -17,6 +17,8 @@ Configuración personal de escritorio basada en **Hyprland** sobre **Arch Linux*
 ### Wofi
 ![wofi](assets/screenshots/wofi.png)
 
+### Lockscreen
+![notifications](assets/screenshots/lockscreen.png)
 
 ### Notifications
 ![notifications](assets/screenshots/notifications.png)
