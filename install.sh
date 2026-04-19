@@ -22,6 +22,8 @@ CONFIG_ITEMS=(
   waybar
   wofi
   xsettingsd
+  plymouth
+  zsh
 )
 
 INSTALL_PACKAGES=true
