@@ -5,6 +5,7 @@ asciiquarium
 awww
 base
 base-devel
+bibata-cursor-theme
 blueman
 bluez
 bluez-utils
@@ -84,14 +85,18 @@ texlive-bibtexextra
 texlive-binextra
 texlive-doc
 texlive-fontsrecommended
+texlive-langeuropean
+texlive-langspanish
 texlive-latex
 texlive-latexextra
 texlive-mathscience
 texlive-pictures
 texlive-publishers
+tokyonight-gtk-theme-git
 trash-cli
 ttf-jetbrains-mono-nerd
 unzip
+visual-studio-code-bin
 waybar
 wev
 wget
@@ -103,5 +108,8 @@ wpa_supplicant
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 xorg-xwayland
+yay
+yay-debug
 zip
 zram-generator
+zsh

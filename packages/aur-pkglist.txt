@@ -1,5 +1,6 @@
 bibata-cursor-theme
 tokyonight-gtk-theme-git
 visual-studio-code-bin
+wlogout-debug
 yay
 yay-debug
